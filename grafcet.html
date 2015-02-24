@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-  <title>Page Title</title>
+  <title>GrafcetToList</title>
   
   <link href="./css/bootstrap.min.css" type="text/css" rel="stylesheet">
   <link href="./css/carousel.css" type="text/css" rel="stylesheet">
@@ -422,14 +422,14 @@ function init() {
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="">Project name</a>
+						<a class="navbar-brand" href="">GrafcetToList</a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
-							<li class="active"><a href="">Application</a></li>
-							<li><a href="">Aide</a></li>
-							<li><a href="">Idée</a></li>
-							<li><a href="">Projet</a></li>
+							<li class="active"><a href="#application">Application</a></li>
+							<li><a href="#aide">Aide</a></li>
+							<li><a href="#idee">Présentation</a></li>
+							<li><a href="#contact">Contacts</a></li>
 						</ul>
 					</div>
 				</div>
@@ -437,60 +437,9 @@ function init() {
 		</div>
 	</div>
 	<!-- Fin de la barre de navigation -->
-	  
-	<!-- Le carousel d'images -->
-	<div id="my_carousel" class="carousel slide" data-ride="carousel">
-		<!-- Bulles -->
-		<ol class="carousel-indicators">
-		<li data-target="#my_carousel" data-slide-to="0" class="active"></li>
-		<li data-target="#my_carousel" data-slide-to="1"></li>
-		<li data-target="#my_carousel" data-slide-to="2"></li>
-		<li data-target="#my_carousel" data-slide-to="3"></li>
-		</ol>
-		<!-- Slides -->
-		<div class="carousel-inner">
-		<!-- Page 1 -->
-		<div class="item active">  
-		<div class="carousel-page">
-		<img src="" class="img-responsive img-rounded" 
-		style="margin:0px auto;max-height:100%;"  />
-		</div>  
-		<div class="carousel-caption">L'application</div>
-		</div>     
-		<!-- Page 2 -->
-		<div class="item"> 
-		<div class="carousel-page">
-		<img src="" class="img-responsive" style="margin:0px auto;" />
-		</div> 
-		<div class="carousel-caption">L'aide d'utilisation</div>
-		</div>   
-		<!-- Page 3 -->
-		<div class="item"> 
-		<div class="carousel-page">
-		<img src="/images/idea.jpg" class="img-responsive" style="margin:0px auto;" />
-		</div> 
-		<div class="carousel-caption">L'idée initiale</div>
-		</div>   
-		<!-- Page 4 -->
-		<div class="item">  
-		<div class="carousel-page">
-		<img src="/images/automation.jpg" class="img-responsive img-rounded" style="margin:0px auto;"  />
-		</div> 
-		<div class="carousel-caption">La gestion du projet</div>
-		</div>  
-		</div>
-
-		<!-- Contrôles -->
-		<a class="left carousel-control" href="#my_carousel" data-slide="prev">
-		<span class="glyphicon glyphicon-chevron-left"></span>
-		</a>
-		<a class="right carousel-control" href="#my_carousel" data-slide="next">
-		<span class="glyphicon glyphicon-chevron-right"></span>
-		</a>
-	</div>
-	<!-- Fin du carousel d'images -->
 
 	<!-- Le grafcet -->
+	<div id="application" style="padding-top:80px">
 	 <div style="width:100%; white-space:nowrap;">
     <span style="display: inline-block; vertical-align: top; padding: 2px; width:85%">
       <div id="myDiagram" style="border: solid 1px black; height: 600px"></div>
@@ -499,13 +448,9 @@ function init() {
       <div id="myOverview" style="border: solid 1px black; height: 300px"></div>
     </span>
   </div>
-  <p>
-    Select a Node to show a list of Buttons that enable creating new Nodes or drawing new Links.
-  </p>
   <div id="buttons">
-    <button id="loadModel" onclick="load()">Load</button>
-    <button id="saveModel" onclick="save()">Save</button>
-    The initial model actually has four separate models mixed together, to show more variety in a single diagram.
+    <button id="loadModel" onclick="load()">Charger</button>
+    <button id="saveModel" onclick="save()">Sauvegarder</button>
   </div>
   <textarea id="mySavedModel" style="width:100%;height:300px">
 { "class": "go.GraphLinksModel",
@@ -559,68 +504,83 @@ function init() {
  ]}
   </textarea>
 </div>
+	</div>
 
 	<!-- START THE FEATURETTES -->
-
+	<div id="aide">
       <hr class="featurette-divider">
 
       <div class="row featurette">
         <div class="col-md-7">
-          <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+          <h2 class="featurette-heading">Apprendre à utiliser l'outils<br></h2>
+          <p class="lead">
+			1) Commencer par cliquer sur une étape<br>
+			2) Sélectionner un des boutons sous l'étape<br>
+			<br>
+			Pour modifier le nom d'une action, d'une étape ou son numéro, <br>
+			il vous suffit de double-cliquer dessus.
+			
+		  </p>
         </div>
         <div class="col-md-5">
           <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="500x500" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjE5MC4zMTI1IiB5PSIyNTAiIHN0eWxlPSJmaWxsOiNBQUFBQUE7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6MjNwdDtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj41MDB4NTAwPC90ZXh0PjwvZz48L3N2Zz4=" data-holder-rendered="true">
         </div>
       </div>
+	</div>
 
+	<div id="idee">
       <hr class="featurette-divider">
 
       <div class="row featurette">
         <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="500x500" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjE5MC4zMTI1IiB5PSIyNTAiIHN0eWxlPSJmaWxsOiNBQUFBQUE7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6MjNwdDtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj41MDB4NTAwPC90ZXh0PjwvZz48L3N2Zz4=" data-holder-rendered="true">
+			<object data="http://prezi.com/hnha1lisitkf/view" height="500" width="650"></object>
+          <!--<img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="500x500" src="=" data-holder-rendered="true">-->
         </div>
         <div class="col-md-7">
-          <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+		 
+          <h2 class="featurette-heading">Présentation du projet<br></h2>
+		  <h3><span class="text-muted">L'idée</span></h3>
+		  Le Grafcet est un mode de représentation et d'analyse d'un automatisme.
+		  C'est le langage graphique le plus utilisé par les automaticiens.
+		  Parfois, les logiciels de programmation d'automate n'utilisent pas le Grafcet,
+		  mais d'autres langages tels que le Ladder ou le LIST.
+			Le langage LIST est complexe car il se rapproche de l'assembleur.
+			Ainsi, notre application permet de simplifier la vie des automaticiens, en traduisant leur Grafcet directement en LIST.<br>
+			
+		 
         </div>
       </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="500x500" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjE5MC4zMTI1IiB5PSIyNTAiIHN0eWxlPSJmaWxsOiNBQUFBQUE7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6MjNwdDtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj41MDB4NTAwPC90ZXh0PjwvZz48L3N2Zz4=" data-holder-rendered="true">
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
+	</div>
 	  
 	  <div class="container marketing">
 	
       <!-- Three columns of text below the carousel -->
-      <div class="row">
+      <div class="row" id="contact">
         <div class="col-lg-4">
-          <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
+          <img class="img-circle" src="images/flo.jpg" alt="Generic placeholder image" style="width: 140px; height: 140px;">
           <h2>Florian Hardy</h2>
           <p>Réalisation du site web avec bootstrap et travail sur l'application.</p>
-          <p><a class="btn btn-default" href="http://getbootstrap.com/examples/carousel/#" role="button">View details »</a></p>
+          <p>
+			<a href="http://www.viadeo.com/en/profile/florian.hardy1"><img src="images/viadeo.png" class="imgReseau"></a>
+			<a href="https://www.linkedin.com/in/hardyflorian"><img src="images/linkedin.png" class="imgReseau"></a>
+			<a href="http://www.doyoubuzz.com/florian-hardy_1"><img src="images/doyoubuzz.png" class="imgReseau"></a>
+			</p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-          <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
+          <img class="img-circle" src="images/emeric.jpg" alt="Generic placeholder image" style="width: 140px; height: 140px;">
           <h2>Emeric Leclair</h2>
           <p>Rédaction du cahier des charges et travail sur l'application.</p>
-          <p><a class="btn btn-default" href="http://getbootstrap.com/examples/carousel/#" role="button">View details »</a></p>
+          <p>  <a href="http://www.doyoubuzz.com/emeric-leclair"><img src="images/doyoubuzz.png" class="imgReseau"></a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-          <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 140px; height: 140px;">
+          <img class="img-circle" src="images/paul.jpg" alt="Generic placeholder image" style="width: 140px; height: 140px;">
           <h2>Paul Mégueule</h2>
-          <p>Etat des lieux de l'existant et travail sur l'application.</p>
-          <p><a class="btn btn-default" href="http://getbootstrap.com/examples/carousel/#" role="button">View details »</a></p>
+          <p>Etat des lieux de l'existant et travail sur l'application.<br></p>
+          <p>
+			<a href="http://fr.viadeo.com/fr/profile/paul.m%C3%A9gueule"><img src="images/viadeo.png" class="imgReseau"></a>
+			<a href="https://fr.linkedin.com/pub/paul-m%C3%A9gueule/83/189/402"><img src="images/linkedin.png" class="imgReseau"></a>
+			<a href="http://www.doyoubuzz.com/paul-megueule"><img src="images/doyoubuzz.png" class="imgReseau"></a>
+			</p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 
