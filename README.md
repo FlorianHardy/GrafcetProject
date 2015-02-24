@@ -32,7 +32,7 @@ Technologies utilisées :
 
 Utiliser l'application :
 
-	1) Commencer par cliquer sur une étape<br>
+	1) Commencer par cliquer sur une étape
 	2) En sélectionnant une des étapes, vous pouvez soit :
 		- Ajouter une étape.
 		- Réaliser une boucle vers une autre étape.
