@@ -513,12 +513,24 @@ function init() {
       <div class="row featurette">
         <div class="col-md-7">
           <h2 class="featurette-heading">Apprendre à utiliser l'outils<br></h2>
-          <p class="lead">
+          <p align="justify">
 			1) Commencer par cliquer sur une étape<br>
-			2) Sélectionner un des boutons sous l'étape<br>
+			2) En sélectionnant une des étapes, vous pouvez soit :
+			<ul style="list-style-type:disc;">
+				<li>Ajouter une étape</li>
+				<li>Réaliser une boucle vers une autre étape</li>
+			</ul>
 			<br>
-			Pour modifier le nom d'une action, d'une étape ou son numéro, <br>
+			3) Pour modifier le nom d'une action, d'une étape ou son numéro, <br>
 			il vous suffit de double-cliquer dessus.
+			<br>
+			4) Le Grafcet convertit en LIST est automatiquement ajouté dans la zone de texte.<br>
+			Celle-ci est composée de 3 parties :
+			<ul style="list-style-type:disc;">
+				<li>La première génére le code d'initialisation</li>
+				<li>Le deuxième génére le code de la logique des étapes</li>
+				<li>Le troisième génére le code des sorties</li>
+			</ul>
 			
 		  </p>
         </div>
@@ -539,15 +551,74 @@ function init() {
         <div class="col-md-7">
 		 
           <h2 class="featurette-heading">Présentation du projet<br></h2>
-		  <h3><span class="text-muted">L'idée</span></h3>
-		  Le Grafcet est un mode de représentation et d'analyse d'un automatisme.
-		  C'est le langage graphique le plus utilisé par les automaticiens.
-		  Parfois, les logiciels de programmation d'automate n'utilisent pas le Grafcet,
-		  mais d'autres langages tels que le Ladder ou le LIST.
-			Le langage LIST est complexe car il se rapproche de l'assembleur.
-			Ainsi, notre application permet de simplifier la vie des automaticiens, en traduisant leur Grafcet directement en LIST.<br>
-			
 		 
+			<div class="row">
+			<div class="col-lg-5">
+			
+				 <h3><span class="text-muted">L'idée</span></h3>
+				<p align="justify">
+				Le Grafcet est un mode de représentation et d'analyse d'un automatisme.
+				  C'est le langage graphique le plus utilisé par les automaticiens.
+				  Parfois, les logiciels de programmation d'automate n'utilisent pas le Grafcet,
+				  mais d'autres langages tels que le Ladder ou le LIST.
+				Le langage LIST est complexe car il se rapproche de l'assembleur. De plus, l'étape de traduction manuelle est longue et complexe.
+				Ainsi, notre application permet de simplifier la vie des automaticiens, en traduisant leur Grafcet directement en LIST.<br>
+				Ce projet permet donc aux utilisateurs de transformer leur Grafcet en LIST, à travers une interface simple.
+				<p>
+				<h3><span class="text-muted">Technologies utilisées :</span></h3>
+				<ul style="list-style-type:disc;">
+					<li>HTML5 / CSS3 / JavaScript</li>
+					<li>Bootstrap</li>
+					<li>Framework GoJs</li>
+				</ul>
+				 
+				 <h3><span class="text-muted">Possibilités illimitées :</span></h3>
+				 <ul style="list-style-type:disc;">
+					<li>Drag & Drop des composants</li>
+					<li>Augmenter la complexité (ET, OU...)</li>
+					<li>Multiples Grafcets</li>
+					<li>Récupérer en format texte le LIST</li>
+					<li>Exporter  sous forme d'image</li>
+					<li>Modèle inverse</li>
+				</ul>
+			</div>
+			<div class="col-lg-5">
+				<h3><span class="text-muted">Cahier des charges :</span></h3>
+				
+Le texte de la fenêtre en LIST se mettra à jour au fur et à mesure de la modification du grafcet.
+<br><br>
+Logique de l’application:
+<br><br>
+- Ajout d’une étape initiale:<br>
+<ul style="list-style-type:disc;">
+<li>Ajout de “S M[numéro de l’étape]” dans la partie Initialization du LIST</li>
+</ul>
+- Ajout d’une étape:<br>
+<ul style="list-style-type:disc;">
+<li>Ajout de “R M[numéro de l’étape]” dans la partie Initialization du LIST</li>
+<li>si transition en amont=> Ajout dans Logic de :
+	<ul style="list-style-type:disc;">
+		<li>“U M[numéro de l’étape en amont de la transition]”</li>
+		<li>“U E[numéro de l’entrée automate]”</li>
+		<li>“R M[numéro de l’étape en amont de la transition]”</li>
+		<li>“S M[numéro de l’étape en aval de la transition]”</li>
+	</ul>
+</ul>
+-Ajout d’une transition:<br>
+<ul style="list-style-type:disc;">
+	<li>mémorisation de l’entrée automate associé, de l’étape en aval (si existante) et de l’étape en amont (si existante)</li>
+</ul>
+-Ajout d’une transition de retour:<br>
+<ul style="list-style-type:disc;">
+	<li>mémorisation de l’entrée automate associé, de l’étape en aval et de l’étape en amont.</li>
+</ul>
+-Ajout d’une action:<br>
+<ul style="list-style-type:disc;">
+	<li>“U M[numéro de l’étape associée]”</li>
+	<li>“=A[numéro de l’action]” (si pas ajouté précédemment)</li>
+</ul>
+			</div>
+		</div>
         </div>
       </div>
 	</div>
@@ -555,7 +626,7 @@ function init() {
 	  <div class="container marketing">
 	
       <!-- Three columns of text below the carousel -->
-      <div class="row" id="contact">
+      <div class="row" id="contact" style="padding-top:20px">
         <div class="col-lg-4">
           <img class="img-circle" src="images/flo.jpg" alt="Generic placeholder image" style="width: 140px; height: 140px;">
           <h2>Florian Hardy</h2>
@@ -583,7 +654,19 @@ function init() {
 			</p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
-
+		<audio id="miaou" src="sounds/miaou.mp3">
+		</audio>
+		<div id="beep">
+		 <a href="https://github.com/FlorianHardy/GrafcetProject">
+		<img src="images/github.png"  height="15%" width="15%" style="display: block; margin-left: auto; margin-right: auto" onmouseover="JouerSon()" /></div>
+		<script>
+			function JouerSon() { 
+					var sound = document.getElementById("miaou");
+					sound.play();
+				}
+		</script>
+		</a>
+	 
 </body>
 
 <script src="./carousel/jquery.min.js"></script>
