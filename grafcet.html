@@ -12,118 +12,121 @@
   <script src="./carousel/ie-emulation-modes-warning.js"></script>
   
   <script id="code">
-function init() {
-    if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
-    var $ = go.GraphObject.make;
+  i = 0;
+  function init() {
 
+    var $ = go.GraphObject.make;    
+    initializationTxt=document.getElementById("initialization");
+    logicTxt=document.getElementById("logic");
+    outputsTxt=document.getElementById("outputs");
+    
     myDiagram =
-      $(go.Diagram, "myDiagram",
-        {
-          allowDrop: true,
-          allowLink: false,
-          initialContentAlignment: go.Spot.Center,
-          "undoManager.isEnabled": true
-        });
-
-    // when the document is modified, add a "*" to the title and enable the "Save" button
-    myDiagram.addDiagramListener("Modified", function(e) {
-      var button = document.getElementById("saveModel");
-      if (button) button.disabled = !myDiagram.isModified;
-      var idx = document.title.indexOf("*");
-      if (myDiagram.isModified) {
-        if (idx < 0) document.title += "*";
-      } else {
-        if (idx >= 0) document.title = document.title.substr(0, idx); 
-      }
+    $(go.Diagram, "myDiagram",
+    {
+      allowDrop: true,
+      allowLink: false,
+      initialContentAlignment: go.Spot.Center,
+      "undoManager.isEnabled": true
     });
 
-    // This implements an Adornment that is a bar of command buttons that appear when the user selects a node.
-    // Each button has a click function to execute the command, a tooltip for a textual description,
-    // and a Binding of "visible" to hide the button if it cannot be executed for that particular node.
+    // quand le diagramme est modifié
+    myDiagram.addDiagramListener("Modified", function(e) {      
+     initializationTxt.value = "//**********initialization**********\n"  
+     logicTxt.value = "//**********logic**********\n" 
+     outputsTxt.value = "//**********outputs**********\n"
+     var listOfNode=myDiagram.model.nodeDataArray;
+     var listOfLink=myDiagram.model.linkDataArray;
+     var stepBefore;
+     listOfNode.forEach(function(entry) {      
+      if(entry.category==="Start")
+      {
+      initializationTxt.value+="\nS M" + entry.step ;
+      }
+      else
+      {
+      initializationTxt.value+="\nR M" + entry.step ;
+      }
+      if(entry.text)
+      {
+        var key=entry.key; 
+        logicTxt.value+="\nU M" + stepBefore;    
+      listOfLink.forEach(function(entryLink) {
+        if(entryLink.to==key)
+        {          
+          logicTxt.value+="\nU " + entryLink.text;
+        }
+      });  
+      logicTxt.value+="\nR M" + stepBefore +"\nS M" + entry.step + "\n";
+      outputsTxt.value+="\nU M" + entry.step + "\n=" + entry.text + "\n";
+      } 
+       stepBefore=entry.step;              
+      });      
+    });
+
+    // Implémentation des boutons sur les étapes
 
     var commandsAdornment =
-      $(go.Adornment, "Vertical",
-        $(go.Panel, "Auto",
-          $(go.Shape, { fill: null, stroke: "deepskyblue", strokeWidth: 2 }),
-          $(go.Placeholder)
+    $(go.Adornment, "Vertical",
+      $(go.Panel, "Auto",
+        $(go.Shape, { fill: null, stroke: "deepskyblue", strokeWidth: 2 }),
+        $(go.Placeholder)
         ),
-        $(go.Panel, "Horizontal",
-          { defaultStretch: go.GraphObject.Vertical },
-          $("Button",
-            $(go.Shape,
-              { geometryString: "M0 0 L10 0",
-                fill: null, stroke: "red", margin: 3 }),
-            { click: addExclusive, toolTip: makeTooltip("Add Exclusive") },
-            new go.Binding("visible", "", canAddSplit).ofObject()),
-          $("Button",
-            $(go.Shape,
-              { geometryString: "M0 0 L10 0 M0 3 10 3",
-                fill: null, stroke: "red", margin: 3 }),
-            { click: addParallel, toolTip: makeTooltip("Add Parallel") },
-            new go.Binding("visible", "", canAddSplit).ofObject()),
-          $("Button",
-            $(go.Shape,
-              { geometryString: "M0 0 L10 0 10 6 0 6z",
-                fill: "lightyellow", margin: 3 }),
-            { click: addStep, toolTip: makeTooltip("Add Step") },
-            new go.Binding("visible", "", canAddStep).ofObject()),
-          $("Button",
-            $(go.Shape,
-              { geometryString: "M0 0 M5 0 L5 10 M3 8 5 10 7 8 M10 0",
-                fill: null, margin: 3 }),
-            { click: startLinkDown, toolTip: makeTooltip("Draw Link Down") },
-            new go.Binding("visible", "", canStartLink).ofObject()),
-          $("Button",
-            $(go.Shape,
-              { geometryString: "M0 0 M3 0 L3 2 7 2 7 6 3 6 3 10 M1 8 3 10 5 8 M10 0",
-                fill: null, margin: 3 }),
-            { click: startLinkAround, toolTip: makeTooltip("Draw Link Skip") },
-            new go.Binding("visible", "", canStartLink).ofObject()),
-          $("Button",
-            $(go.Shape,
-              { geometryString: "M0 0 M3 2 L3 0 7 0 7 10 3 10 3 8 M5 6 7 4 9 6 M10 0",
-                fill: null, margin: 3 }),
-            { click: startLinkUp, toolTip: makeTooltip("Draw Link Repeat") },
-            new go.Binding("visible", "", canStartLink).ofObject())
+      $(go.Panel, "Horizontal",
+        { defaultStretch: go.GraphObject.Vertical },        
+        $("Button",
+          $(go.Shape,
+            { geometryString: "M0 0 L10 0 10 6 0 6z",
+            fill: "lightyellow", margin: 3 }),
+          { click: addStep, toolTip: makeTooltip("Ajouter une etape") },
+          new go.Binding("visible", "", canAddStep).ofObject()),        
+        $("Button",
+          $(go.Shape,
+            { geometryString: "M0 0 M3 2 L3 0 7 0 7 10 3 10 3 8 M5 6 7 4 9 6 M10 0",
+            fill: null, margin: 3 }),
+          { click: startLinkUp, toolTip: makeTooltip("Boucle") },
+          new go.Binding("visible", "", canStartLink).ofObject())
         )
-      );
+);
 
-    function makeTooltip(str) {  // a helper function for defining tooltips for buttons
+//Fonction d'info bulle
+    function makeTooltip(str) {  
       return $(go.Adornment, go.Panel.Auto,
-               $(go.Shape, { fill: "#FFFFCC" }),
-               $(go.TextBlock, str, { margin: 4 }));
+       $(go.Shape, { fill: "#FFFFCC" }),
+       $(go.TextBlock, str, { margin: 4 }));
     }
 
-    // Commands for adding new Nodes
+    // Commande pour ajouter une nouvelle étape
 
     function addStep(e, obj) {
       var node = obj.part.adornedPart;
       var model = myDiagram.model;
-      model.startTransaction("add Step");
+      model.startTransaction("Ajouter une étape");
       var loc = node.location.copy();
-      loc.y += 50;
-      var nodedata = { location: go.Point.stringify(loc) };
+      loc.y += 70;
+      i++;
+      var nodedata = { location: go.Point.stringify(loc),step:i,text:"A"+i,key:i };
       model.addNodeData(nodedata);
-      var nodekey = model.getKeyForNodeData(nodedata);
-      var linkdata = { from: model.getKeyForNodeData(node.data), to: nodekey };
-      model.addLinkData(linkdata);
+      var nodekey = model.getKeyForNodeData(nodedata);      
+      var linkdata = { from: model.getKeyForNodeData(node.data), to: nodekey, text:"E"+i };     
+      model.addLinkData(linkdata);      
       var newnode = myDiagram.findNodeForData(nodedata);
       myDiagram.select(newnode);
-      model.commitTransaction("add Step");
+      model.commitTransaction("Ajouter une étape");      
+      save();
     }
 
     function canAddStep(adorn) {
       var node = adorn.adornedPart;
       if (node.category === "" || node.category === "Start") {
         return node.findLinksOutOf().count === 0;
-      } else if (node.category === "Parallel" || node.category === "Exclusive") {
+      } else if (node.category === "Parallel" || node.category === "Exclusive") {        
         return true;
       }
       return false;
     }
 
-    function addParallel(e, obj) { addSplit(obj.part.adornedPart, "Parallel"); }
-    function addExclusive(e, obj) { addSplit(obj.part.adornedPart, "Exclusive"); }
+    function addParallel(e, obj) { addSplit(obj.part.adornedPart, "Parallel"); save(); }
+    function addExclusive(e, obj) { addSplit(obj.part.adornedPart, "Exclusive"); save(); }
 
     function addSplit(node, type) {
       var model = myDiagram.model;
@@ -138,11 +141,13 @@ function init() {
       var newnode = myDiagram.findNodeForData(nodedata);
       myDiagram.select(newnode);
       model.commitTransaction("add " + type);
+      save();
     }
 
     function canAddSplit(adorn) {
       var node = adorn.adornedPart;
       if (node.category === "" || node.category === "Start") {
+        save();
         return node.findLinksOutOf().count === 0;
       } else if (node.category === "Parallel" || node.category === "Exclusive") {
         return false;
@@ -150,11 +155,11 @@ function init() {
       return false;
     }
 
-    // Commands for starting drawing new Links
+    // Commande pour ajouter un nouveau lien
 
-    function startLinkDown(e, obj) { startLink(obj.part.adornedPart, ""); }
-    function startLinkAround(e, obj) { startLink(obj.part.adornedPart, "Skip"); }
-    function startLinkUp(e, obj) { startLink(obj.part.adornedPart, "Repeat"); }
+    function startLinkDown(e, obj) { startLink(obj.part.adornedPart, ""); save();}
+    function startLinkAround(e, obj) { startLink(obj.part.adornedPart, "Skip"); save();}
+    function startLinkUp(e, obj) { startLink(obj.part.adornedPart, "Repeat"); save();}
 
     function startLink(node, category) {
       var tool = myDiagram.toolManager.linkingTool;
@@ -162,181 +167,142 @@ function init() {
       tool.startObject = node.port;
       myDiagram.currentTool = tool;
       tool.doActivate();
+      save();
     }
 
     function canStartLink(adorn) {
       var node = adorn.adornedPart;
-      return true;  // this could be smarter
+      save();
+      return true;  
     }
 
 
-    // The various kinds of Nodes
+    // Création des objets du grafcet
+    //Initialisation de l'étape 0
 
     myDiagram.nodeTemplateMap.add("Start",
       $(go.Node, "Horizontal",
-        {
-          locationSpot: go.Spot.Center, locationObjectName: "STEPPANEL",
-          selectionObjectName: "STEPPANEL", selectionAdornmentTemplate: commandsAdornment
-        },
-        new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
+      {
+        locationSpot: go.Spot.Center, locationObjectName: "STEPPANEL",
+        selectionObjectName: "STEPPANEL", selectionAdornmentTemplate: commandsAdornment
+      },
+      new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
+      //Adapte la taille au contenu
+      $(go.Panel, "Auto",
+        { name: "STEPPANEL", portId: "", fromSpot: go.Spot.Bottom, fromLinkable: true },
+        //Rendu arrondi
+        $(go.Shape, "RoundedRectangle",{ fill: "gray", minSize: new go.Size(30, 30) }),
         $(go.Panel, "Auto",
-          { name: "STEPPANEL", portId: "", fromSpot: go.Spot.Bottom, fromLinkable: true },
-          $(go.Shape, { fill: "lightgreen" }),
-          $(go.Panel, "Auto",
-            { margin: 3 },
-            $(go.Shape, { fill: null, minSize: new go.Size(20, 20) }),
-            $(go.TextBlock, "Start",
-              { margin: 3, editable: true },
-              new go.Binding("text", "step").makeTwoWay())
-          )
-        ),
-        $(go.Shape, "LineH", { width: 10, height: 1 }),
-        $(go.Panel, "Auto",
-          $(go.Shape, { fill: "white" }),
-          $(go.TextBlock, "Action",
-            { margin: 3, editable: true },
-            new go.Binding("text", "text").makeTwoWay())
-        )
-      ));
-
-    myDiagram.nodeTemplateMap.add("",
-      $(go.Node, "Horizontal",
-        {
-          locationSpot: go.Spot.Center, locationObjectName: "STEPPANEL",
-          selectionObjectName: "STEPPANEL", selectionAdornmentTemplate: commandsAdornment
-        },
-        new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
-        $(go.Panel, "Auto",
-          {
-            name: "STEPPANEL", portId: "",
-            fromSpot: go.Spot.Bottom, fromLinkable: true,
-            toSpot: go.Spot.Top, toLinkable: true
-          },
-          $(go.Shape, { fill: "lightyellow", minSize: new go.Size(20, 20) }),
-          $(go.TextBlock, "Step",
+          { margin: 1 },
+          $(go.Shape, "RoundedRectangle",{ fill: null, minSize: new go.Size(30, 30) }),
+          $(go.TextBlock, "Start",
             { margin: 3, editable: true },
             new go.Binding("text", "step").makeTwoWay())
-        ),
-        $(go.Shape, "LineH", { width: 10, height: 1 }),
-        $(go.Panel, "Auto",
-          $(go.Shape, { fill: "white" }),
-          $(go.TextBlock, "Action",
-            { margin: 3, editable: true },
-            new go.Binding("text", "text").makeTwoWay())
+          )
         )
       ));
 
-    var resizeAdornment =
-      $(go.Adornment, go.Panel.Spot,
-        $(go.Placeholder),
-        $(go.Shape,  // left resize handle
+//Création de l'étape
+//On ajoute un nouveau noeud
+myDiagram.nodeTemplateMap.add("",
+  //Horizontale -> postitionnement de l'action
+  $(go.Node, "Horizontal",
+  {
+    locationSpot: go.Spot.Center, locationObjectName: "STEPPANEL",
+    selectionObjectName: "STEPPANEL", selectionAdornmentTemplate: commandsAdornment
+  },
+  new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
+  $(go.Panel, "Auto",
+  {
+    name: "STEPPANEL", portId: "",
+    fromSpot: go.Spot.Bottom, fromLinkable: true,
+    toSpot: go.Spot.Top, toLinkable: true
+  },
+  $(go.Shape, "RoundedRectangle",{ fill: "lightgray", minSize: new go.Size(35, 35) }),
+  $(go.TextBlock , "" + i,
+    { margin: 3, editable: true },
+    new go.Binding("text", "step").makeTwoWay())
+  ),
+  $(go.Shape, "LineH", { width: 10, height: 1 }),
+  $(go.Panel, "Auto",
+    $(go.Shape, "RoundedRectangle",{ fill: "wheat", minSize: new go.Size(100, 35)}),
+    $(go.TextBlock, "Sortie API",
+      { margin: 3, editable: true },
+      new go.Binding("text", "text").makeTwoWay())
+    )
+  ));
+
+var resizeAdornment =
+$(go.Adornment, go.Panel.Spot,
+  $(go.Placeholder),
+        $(go.Shape,  
           { alignment: go.Spot.Left, cursor: "col-resize",
           desiredSize: new go.Size(6, 6), fill: "lightblue", stroke: "dodgerblue" }),
-        $(go.Shape,  // right resize handle
+        $(go.Shape,  
           { alignment: go.Spot.Right, cursor: "col-resize",
-            desiredSize: new go.Size(6, 6), fill: "lightblue", stroke: "dodgerblue" })
-      );
+          desiredSize: new go.Size(6, 6), fill: "lightblue", stroke: "dodgerblue" })
+        );
 
-    myDiagram.nodeTemplateMap.add("Parallel",
-      $(go.Node,
-        {
-          locationSpot: go.Spot.Center,
-          selectionObjectName: "STEPPANEL", selectionAdornmentTemplate: commandsAdornment,
-          // special resizing: just at the ends
-          resizable: true, resizeObjectName: "SHAPE",
-          resizeAdornmentTemplate: resizeAdornment,
-          fromLinkable: true, toLinkable: true },
-        new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
-        $(go.Shape,
-          { name: "SHAPE",
-            geometryString: "M0 0 L100 0 M0 4 L100 4",
-            fill: "transparent", stroke: "red", width: 200 },
-          new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify))
-      ));
 
-    myDiagram.nodeTemplateMap.add("Exclusive",
-      $(go.Node,
-        {
-          locationSpot: go.Spot.Center,
-          selectionObjectName: "STEPPANEL", selectionAdornmentTemplate: commandsAdornment,
-          // special resizing: just at the ends
-          resizable: true, resizeObjectName: "SHAPE",
-          resizeAdornmentTemplate: resizeAdornment,
-          fromLinkable: true, toLinkable: true
-        },
-        new go.Binding("location", "location", go.Point.parse).makeTwoWay(go.Point.stringify),
-        $(go.Shape,
-          { name: "SHAPE",
-            geometryString: "M0 0 L100 0",
-            fill: "transparent", stroke: "red", width: 200 },
-          new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify))
-      ));
-
-    // the various kinds of Links
+    // Lien entre les étapes
 
     myDiagram.linkTemplateMap.add("",
-      $(BarLink,  // subclass defined below
+      $(BarLink,  
         { routing: go.Link.Orthogonal },
         $(go.Shape,
           { strokeWidth: 1.5 }),
-        $(go.Shape, "LineH",  // only visible when there is text
+        $(go.Shape, "LineH",  
           { width: 20, height: 1, visible: false },
           new go.Binding("visible", "text", function(t) { if (t) return true; else return false; })),
-        $(go.TextBlock,  // only visible when there is text
+        $(go.TextBlock,  
           { alignmentFocus: new go.Spot(0, 0.5, -12, 0), editable: true },
           new go.Binding("text", "text").makeTwoWay(),
           new go.Binding("visible", "text", function(t) { if (t) return true; else return false; }))
-      ));
+        ));
 
+//Liaison de connection entre deux étapes
     myDiagram.linkTemplateMap.add("Skip",
       $(go.Link,
-        {
-          routing: go.Link.AvoidsNodes,
-          fromSpot: go.Spot.Bottom, toSpot: go.Spot.Top,
-          fromEndSegmentLength: 4, toEndSegmentLength: 4
-        },
-        $(go.Shape,
-          { strokeWidth: 1.5 }),
-        $(go.Shape, "LineH",  // only visible when there is text
+      {
+        routing: go.Link.AvoidsNodes,
+        fromSpot: go.Spot.Bottom, toSpot: go.Spot.Top,
+        fromEndSegmentLength: 4, toEndSegmentLength: 4
+      },
+      $(go.Shape,
+        { strokeWidth: 1.5 }),
+        $(go.Shape, "LineH",  
           { width: 20, height: 1, visible: false },
           new go.Binding("visible", "text", function(t) { if (t) return true; else return false; })),
-        $(go.TextBlock,  // only visible when there is text
+        $(go.TextBlock,  
           { alignmentFocus: new go.Spot(1, 0.5, 12, 0), editable: true },
           new go.Binding("text", "text").makeTwoWay(),
           new go.Binding("visible", "text", function(t) { if (t) return true; else return false; }))
-      ));
+        ));
 
-    myDiagram.linkTemplateMap.add("Repeat",
+///Liaison de retour bouclé
+myDiagram.linkTemplateMap.add("Repeat",
+  myDiagram.linkTemplate =
       $(go.Link,
-        {
-          routing: go.Link.AvoidsNodes,
-          fromSpot: go.Spot.Bottom, toSpot: go.Spot.Top,
-          fromEndSegmentLength: 4, toEndSegmentLength: 4
-        },
+        { routing: go.Link.Orthogonal, corner: 5, toShortLength: -2, fromShortLength: -2, relinkableFrom: true, relinkableTo: true,fromSpot: go.Spot.Bottom, toSpot: go.Spot.Top},
+
         $(go.Shape,
-          { strokeWidth: 1.5 }),
-        $(go.Shape,
-          { toArrow: "OpenTriangle", segmentIndex: 3, segmentFraction: 0.75 }),
-        $(go.Shape,
-          { toArrow: "OpenTriangle", segmentIndex: 3, segmentFraction: 0.25 }),
-        $(go.Shape, "LineH",  // only visible when there is text
+        { strokeWidth: 1.5 }),        
+        $(go.Shape, "LineH",  
           { width: 20, height: 1, visible: false },
           new go.Binding("visible", "text", function(t) { if (t) return true; else return false; })),
-        $(go.TextBlock,  // only visible when there is text
+        $(go.TextBlock,  
           { alignmentFocus: new go.Spot(1, 0.5, 12, 0), editable: true },
           new go.Binding("text", "text").makeTwoWay(),
           new go.Binding("visible", "text", function(t) { if (t) return true; else return false; }))
-      ));
+          )); 
 
     myDiagram.toolManager.linkingTool = new CustomLinkingTool();
 
-    // initialize Overview
+    // initialisation du diagramme
     myOverview =
-      $(go.Overview, "myOverview",
-        { observed: myDiagram,
-          contentAlignment: go.Spot.Center });
-
-    // start off with a simple diagram
+    $(go.Overview, "myOverview",
+      { observed: myDiagram,
+        contentAlignment: go.Spot.Center });
     load();
   }
 
@@ -346,9 +312,7 @@ function init() {
     this.category = "";
   }
   go.Diagram.inherit(CustomLinkingTool, go.LinkingTool);
-
-  // user-drawn linking is normally disabled,
-  // but needs to be turned on when using this tool
+  
   CustomLinkingTool.prototype.doStart = function() {
     go.LinkingTool.prototype.doStart.call(this);
     this.diagram.allowLink = true;
@@ -362,13 +326,11 @@ function init() {
   CustomLinkingTool.prototype.insertLink = function(fromnode, fromport, tonode, toport) {
     var newlink = go.LinkingTool.prototype.insertLink.call(this, fromnode, fromport, tonode, toport);
     newlink.category = this.category;
-    this.category = "";  // back to default
+    this.category = "";  
     return newlink;
   };
 
 
-  // This custom Link class is smart about computing the link point and direction at "Parallel"
-  // and "Exclusive" nodes.
   function BarLink() {
     go.Link.call(this);
   }
@@ -376,7 +338,7 @@ function init() {
 
   BarLink.prototype.getLinkPoint = function(node, port, spot, from, ortho, othernode, otherport) {
     var r = new go.Rect(port.getDocumentPoint(go.Spot.TopLeft),
-                        port.getDocumentPoint(go.Spot.BottomRight));
+      port.getDocumentPoint(go.Spot.BottomRight));
     var op = otherport.getDocumentPoint(go.Spot.Center);
     var below = op.y > r.centerY;
     var y = below ? r.bottom : r.top;
@@ -397,15 +359,14 @@ function init() {
   };
 
 
-  // save a model to and load a model from Json text, displayed below the Diagram
-  function save() {
-    document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+  // sauve le  diagramme
+  function save() {       
     myDiagram.isModified = false;
   }
-  function load() {
-    myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
-  }
-</script>
+  function load() {    
+     myDiagram.model =go.Model.fromJson({ 'class': 'go.GraphLinksModel','nodeDataArray': [{'key':0, 'category':'Start', 'location':'300 50', 'step':0}]});     
+  } 
+  </script>
 
 </head>
 
@@ -428,7 +389,7 @@ function init() {
 						<ul class="nav navbar-nav">
 							<li class="active"><a href="#application">Application</a></li>
 							<li><a href="#aide">Aide</a></li>
-							<li><a href="#idee">Présentation</a></li>
+							<li><a href="#presentation">Présentation</a></li>
 							<li><a href="#contact">Contacts</a></li>
 						</ul>
 					</div>
@@ -438,73 +399,34 @@ function init() {
 	</div>
 	<!-- Fin de la barre de navigation -->
 
-	<!-- Le grafcet -->
-	<div id="application" style="padding-top:80px">
-	 <div style="width:100%; white-space:nowrap;">
-    <span style="display: inline-block; vertical-align: top; padding: 2px; width:85%">
-      <div id="myDiagram" style="border: solid 1px black; height: 600px"></div>
-    </span>
-    <span style="display: inline-block; vertical-align: top; padding: 2px; width:14%">
-      <div id="myOverview" style="border: solid 1px black; height: 300px"></div>
-    </span>
+	<div id="application" style="padding-top:80px" >
+		<h2 class="featurette-heading">Application<br></h2>
+    <div style="width:100%; white-space:nowrap; padding:2%">
+		
+		<h3>Grafcet</h3> 
+      <span style="display: inline-block; vertical-align: top; padding: 2px; width:75%">
+        <div id="myDiagram" style="border: solid 1px black; height: 600px"></div>
+      </span>
+
+      <span style="display: inline-block; vertical-align: top; padding: 2px; width:14%">
+        <div id="myOverview" style="border: solid 1px black; height: 300px"></div>
+      </span>
+	  
+	  <p>
+      <h3>Code en LIST</h3> 
+    </p>    
+    <textarea id="initialization" style="width:20%;height:300px">
+     
+    </textarea>
+    <textarea id="logic" style="width:20%;height:300px">
+     
+    </textarea>
+    <textarea id="outputs" style="width:20%;height:300px">
+     
+    </textarea>
+    </div>
+    
   </div>
-  <div id="buttons">
-    <button id="loadModel" onclick="load()">Charger</button>
-    <button id="saveModel" onclick="save()">Sauvegarder</button>
-  </div>
-  <textarea id="mySavedModel" style="width:100%;height:300px">
-{ "class": "go.GraphLinksModel",
-  "nodeDataArray": [ 
-{"key":1, "category":"Start", "location":"300 50", "step":"1", "text":"Action 1"},
-{"key":2, "category":"Parallel", "location":"300 100"},
-{"key":3, "location":"225 125", "step":"3", "text":"Action 2"},
-{"key":4, "location":"325 150", "step":"4", "text":"Action 3"},
-{"key":5, "location":"225 175", "step":"5", "text":"Action 4"},
-{"key":6, "category":"Parallel", "location":"300 200"},
-{"key":7, "location":"300 250", "step":"7", "text":"Action 6"},
-{"key":11, "category":"Start", "location":"300 350", "step":"11", "text":"Action 1"},
-{"key":12, "category":"Exclusive", "location":"300 400"},
-{"key":13, "location":"225 450", "step":"13", "text":"Action 2"},
-{"key":14, "location":"325 475", "step":"14", "text":"Action 3"},
-{"key":15, "location":"225 500", "step":"15", "text":"Action 4"},
-{"key":16, "category":"Exclusive", "location":"300 550"},
-{"key":17, "location":"300 600", "step":"17", "text":"Action 6"},
-{"key":21, "location":"500 50", "step":"21", "text":"Act 1"},
-{"key":22, "location":"500 100", "step":"22", "text":"Act 2"},
-{"key":23, "location":"500 150", "step":"23", "text":"Act 3"},
-{"key":24, "location":"500 200", "step":"24", "text":"Act 4"},
-{"key":31, "location":"500 400", "step":"31", "text":"Act 1"},
-{"key":32, "location":"500 450", "step":"32", "text":"Act 2"},
-{"key":33, "location":"500 500", "step":"33", "text":"Act 3"},
-{"key":34, "location":"500 550", "step":"34", "text":"Act 4"}
- ],
-  "linkDataArray": [ 
-{"from":1, "to":2, "text":"condition 1"},
-{"from":2, "to":3},
-{"from":2, "to":4},
-{"from":3, "to":5, "text":"condition 2"},
-{"from":4, "to":6},
-{"from":5, "to":6},
-{"from":6, "to":7, "text":"condition 5"},
-{"from":11, "to":12, "text":"condition 1"},
-{"from":12, "to":13, "text":"condition 12"},
-{"from":12, "to":14, "text":"condition 13"},
-{"from":13, "to":15, "text":"condition 2"},
-{"from":14, "to":16, "text":"condition 14"},
-{"from":15, "to":16, "text":"condition 15"},
-{"from":16, "to":17, "text":"condition 5"},
-{"from":21, "to":22, "text":"c1"},
-{"from":22, "to":23, "text":"c2"},
-{"from":23, "to":24, "text":"c3"},
-{"from":21, "to":24, "text":"c14", "category":"Skip"},
-{"from":31, "to":32, "text":"c1"},
-{"from":32, "to":33, "text":"c2"},
-{"from":33, "to":34, "text":"c3"},
-{"from":33, "to":32, "text":"c14", "category":"Repeat"}
- ]}
-  </textarea>
-</div>
-	</div>
 
 	<!-- START THE FEATURETTES -->
 	<div id="aide">
@@ -514,11 +436,11 @@ function init() {
         <div class="col-md-7">
           <h2 class="featurette-heading">Apprendre à utiliser l'outils<br></h2>
           <p align="justify">
-			1) Commencer par cliquer sur une étape<br>
+			1) Commencer par cliquer sur une étape.<br>
 			2) En sélectionnant une des étapes, vous pouvez soit :
 			<ul style="list-style-type:disc;">
-				<li>Ajouter une étape</li>
-				<li>Réaliser une boucle vers une autre étape</li>
+				<li>Ajouter une étape.</li>
+				<li>Réaliser une boucle vers une autre étape.</li>
 			</ul>
 			<br>
 			3) Pour modifier le nom d'une action, d'une étape ou son numéro, <br>
@@ -527,26 +449,25 @@ function init() {
 			4) Le Grafcet convertit en LIST est automatiquement ajouté dans la zone de texte.<br>
 			Celle-ci est composée de 3 parties :
 			<ul style="list-style-type:disc;">
-				<li>La première génére le code d'initialisation</li>
-				<li>Le deuxième génére le code de la logique des étapes</li>
-				<li>Le troisième génére le code des sorties</li>
+				<li>La première génère le code d'initialisation.</li>
+				<li>Le deuxième génère le code de la logique des étapes.</li>
+				<li>Le troisième génère le code des sorties.</li>
 			</ul>
 			
 		  </p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="500x500" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjE5MC4zMTI1IiB5PSIyNTAiIHN0eWxlPSJmaWxsOiNBQUFBQUE7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6MjNwdDtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj41MDB4NTAwPC90ZXh0PjwvZz48L3N2Zz4=" data-holder-rendered="true">
+          <img class="featurette-image img-responsive" alt="500x500" src="images/aide.jpg" data-holder-rendered="true" style="float: right;" >
         </div>
       </div>
 	</div>
 
-	<div id="idee">
+	<div id="presentation">
       <hr class="featurette-divider">
 
       <div class="row featurette">
         <div class="col-md-5">
 			<object data="http://prezi.com/hnha1lisitkf/view" height="500" width="650"></object>
-          <!--<img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="500x500" src="=" data-holder-rendered="true">-->
         </div>
         <div class="col-md-7">
 		 
